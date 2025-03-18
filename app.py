@@ -12,7 +12,9 @@ load_dotenv()
 
 # Flask app setup
 app = Flask(__name__)
-CORS(app)  # Enable CORS for frontend (Angular)
+
+# ✅ Enable CORS for all sites (Allow all origins)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # ✅ Use environment variables
 ELASTICSEARCH_URL = os.getenv("ELASTICSEARCH_URL")
