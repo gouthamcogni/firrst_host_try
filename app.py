@@ -18,6 +18,7 @@ CORS(app)  # Enable CORS for frontend (Angular)
 ELASTICSEARCH_URL = os.getenv("ELASTICSEARCH_URL")
 ELASTICSEARCH_API_KEY = os.getenv("ELASTICSEARCH_API_KEY")
 SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+PORT = int(os.getenv("PORT", 5000))  # Default to 5000 if PORT is not set
 
 # ✅ Initialize Elasticsearch client with environment variables
 try:
@@ -41,7 +42,12 @@ if not es.indices.exists(index=USER_INDEX):
 # ➤ Root Route
 @app.route("/", methods=["GET"])
 def home():
-    return jsonify({"message": "🚀 Welcome to the Flask Authentication API!"}), 200
+    return jsonify({"message": "🚀 Flask Authentication API is running!"}), 200
+
+# ➤ Health Check Route (Render requirement)
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status": "✅ OK"}), 200
 
 # ➤ Signup API
 @app.route("/signup", methods=["POST"])
@@ -120,6 +126,6 @@ def dashboard():
     except jwt.InvalidTokenError:
         return jsonify({"error": "Invalid session! Please login again."}), 401
 
-# ➤ Run the app
+# ➤ Run the app with 0.0.0.0 and dynamic port binding
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(host="0.0.0.0", port=PORT, debug=True)
